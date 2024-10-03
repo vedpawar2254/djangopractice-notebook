@@ -1,0 +1,91 @@
+{% extends 'base/base.html' %} {% block content %} {% if page == 'login' %}
+<div
+  class="position-absolute top-0 start-50 translate-middle-x w-75 p-5 form-group"
+>
+  <form method="POST" action="">
+    {% csrf_token %}
+
+    <div class="form-floating mb-3">
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        id="floatingInput"
+        placeholder="John Doe"
+        autocomplete="off"
+      />
+      <label for="floatingInput">Username</label>
+    </div>
+    <div class="form-floating">
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="floatingPassword"
+        placeholder="Password"
+        autocomplete="off"
+      />
+      <label for="floatingPassword">Password</label>
+    </div>
+
+    <center>
+      <button
+        type="submit"
+        value="login"
+        class="justify-content-center btn btn-primary m-4 d-flex start-50"
+      >
+        Login
+      </button>
+    </center>
+
+    <div>
+      <center>
+        <p class="justify-content-center d-flex start-50 top-0">
+          have you signed up yet ?
+        </p>
+        <a
+          href="{% url 'register' %}"
+          class="btn btn-primary m-4"
+          style="display: flex; justify-content: center; max-width: 120px"
+          >Sign up</a
+        >
+      </center>
+    </div>
+  </form>
+</div>
+
+<!-- <p>havent signed up yet</p> -->
+
+{% else %}
+
+<div class="position-absolute start-50 translate-middle-x w-75 pt-4 form-group">
+  <form method="POST" action="">
+    {% csrf_token %} {{form.as_p}}
+
+    <center>
+      <h5>Already you signed up ?</h5>
+      <a
+        href="{% url 'login' %}"
+        class="btn btn-primary mt-4 top-50"
+        style="display: flex; justify-content: center; max-width: 120px"
+      >
+        Login
+      </a>
+    </center>
+    <button
+      type="submit"
+      value="Register"
+      class="justify-content-center btn btn-primary top-0 d-flex"
+    >
+      Register
+    </button>
+  </form>
+</div>
+
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %} {% endif %} {% endblock content%}

@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %} {% block content %}
+<div
+  class="position-absolute top-0 start-50 translate-middle-x w-75 p-5 form-group"
+>
+  <form action="" method="POST">
+    {% csrf_token %} {{questions_form.as_p}} {{notes.post.id}}
+    <button
+      type="submit"
+      class="justify-content-center btn btn-primary m-4 d-flex"
+    >
+      Submit
+    </button>
+  </form>
+</div>
+
+<script>
+  var name = "{% for notes in notes %} {{notes.post.id}} {% endfor %}";
+  // var name = name[1];
+  document.getElementById("questions").value = name;
+  if (name == "undefined") {
+    name = "{% for post in post %} {{post.id}} {% endfor %}";
+    // name = name[1];
+    document.getElementById("questions").value = name;
+  }
+  console.log(name);
+</script>
+
+{% endblock content %}

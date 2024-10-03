@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %} {% block content %}
+<form action="" method="POST">
+  {% csrf_token %} {{test_form.as_p}} {% for post in post %}
+  <h1></h1>
+  {% for notes in notes %}
+  <button
+    type="submit"
+    class="justify-content-center btn btn-primary m-4 d-flex"
+    action="{% url 'tests' post.id notes.id  %}"
+  >
+    Submit
+  </button>
+  {% endfor %} {% endfor %} {% for post in post %}
+  <center>
+    {% for notes in notes %}
+    <a href="{% url 'tests' post.id notes.id %}" class="btn btn-primary m-4"
+      >Tests</a
+    >
+    {% endfor %}
+  </center>
+  {% endfor %}
+</form>
+
+<script>
+  var notes = "{% for notes in notes %} {{notes.id}} {% endfor %}";
+  var user = "{{request.user}}";
+  document.getElementById("test_notes").value = notes;
+  document.getElementById("test_user").value = user;
+  console.log(notes);
+</script>
+{% endblock %}

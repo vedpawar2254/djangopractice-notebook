@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %} {% block content %}
+
+<div>
+  <h5 class="card-title pb-5 text-center">
+    <form action="{% url 'notes' posts.id %}" method="POST">
+      {% csrf_token %}
+      <button type="submit">Submit</button>
+    </form>
+  </h5>
+</div>
+
+<script>
+  var user = "{{posts.enrolled.id}}";
+  var notes = "{{posts.id}}";
+  document.getElementById("enrolled").value = user;
+</script>
+
+{% endblock %}

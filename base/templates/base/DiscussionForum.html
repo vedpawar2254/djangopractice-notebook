@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %} {% block content %}
+
+
+<nav class="navbar navbar-expand-lg bg-primary font-monospace">
+  <div class="container-fluid">
+    <a href="{% url 'home' %}" class="navbar-brand">Home</a>
+
+    
+    <a class="navbar-brand" aria-current="page" href="{% url 'notes' notes.post.id %}"
+      >Notes</a
+>
+
+    <form class="d-flex" action="{% url 'notes_search' %}" method="GET">
+      <input
+        name="q"
+        class="form-control me-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="btn btn-dark btn-outline-primary" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+</nav>
+
+
+
+
+
+<form method="POST" action="">
+  {% csrf_token %} {{message_form.as_p}}
+  <button
+    type="submit"
+    class="justify-content-center btn btn-primary m-4 d-flex"
+  >
+    Submit
+  </button>
+</form>
+
+<div>
+
+    <center> <h2>Comments: </h2> </center>
+  {% for messages in notes.forum_messages.all %}
+
+  {% if request.user == messages.user %}
+  <a href="{% url 'profile' messages.user.id %}"><center>You</a><small  class="text-muted"> -- made {{messages.updated|timesince}} ago </center></small>
+  {% else %}
+  <a href="{% url 'profile' messages.user.id %}"><center>@{{messages.user.username}}</a><small  class="text-muted"> -- made {{messages.updated|timesince}} ago </center></small>
+  {% endif %}
+  <br>
+  <div  style=" max-width:80%; padding-left: 20%;">
+  <small style="word-wrap: break-word;"><center>{{messages.body}}</center></small>
+  </div>
+  {% if messages.reply %}
+  <small  class="text-muted"><center>reply to: {{messages.reply}}</center></small>
+  {% endif %}
+  <br>
+
+  {% endfor %}
+</div>
+
+
+
+
+<script>
+  var notes = "{{notes.id}}";
+  var user = "{{user.id}}"
+  document.getElementById("discuss_user").value = user
+  document.getElementById("discuss_notes").value = notes;
+  //keep this inside endblock PLEASE
+  //also fix user script
+</script>
+
+
+{% endblock %}
+

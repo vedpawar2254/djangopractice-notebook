@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %} {% block content %}
+<div>
+  <div></div>
+
+  <div></div>
+  <div>
+    {% for notcompleted in notcompleted %}
+    <div>notcompleted: {{notcompleted}}</div>
+    {% endfor %}
+  </div>
+  {% endblock %}
+</div>

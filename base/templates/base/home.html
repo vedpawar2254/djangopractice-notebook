@@ -1,0 +1,204 @@
+{% extends 'base/base.html' %} {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+/>
+
+<nav class="navbar navbar-expand-lg bg-primary font-monospace">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Home</a>
+    <a class="navbar-brand" aria-current="page" href="{% url 'form' %}">Form</a>
+    {% if request.user.is_authenticated %}
+    <a class="navbar-brand" aria-current="page" href="{% url 'logout' %}"
+      >Logout</a
+    >
+    <a class="navbar-brand" aria-current="page" href="{% url 'register' %}"
+      >Register</a
+    >
+
+    <a
+      class="navbar-brand"
+      aria-current="page"
+      href="{% url 'profile' request.user.id %}"
+      >Profile</a
+    >
+
+    {% else %}
+    <a class="navbar-brand" aria-current="page" href="{% url 'login' %}"
+      >Login</a
+    >
+    <a class="navbar-brand" aria-current="page" href="{% url 'register' %}"
+      >Register</a
+    >
+    {% endif %}
+    <form class="d-flex" action="{% url 'post_search' %}" method="GET">
+      <input
+        name="q1"
+        class="form-control me-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="btn btn-dark btn-outline-primary" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+</nav>
+
+{% for post in posts %}
+<div class="d-flex justify-content-center">
+  <div class="w-50 p-5">
+    <div class="card">
+      <div class="card-group">
+        <div class="card-body">
+          <h5 class="card-title pb-5 text-center">
+            </form> 
+            <a href="{% url 'enroll' post.id %}" class="text-primary">{{post.Title}}</a>
+          </h5>
+          <p class="card-text pl-5">{{post.Description}}</p>
+          {% if post.Goal %}
+          <p class="card-text pl-5"><h5 class="text-primary">Goal: </h5>{{post.Goal}}</p>
+          {% endif %}
+          {% if post.reply %}
+          <p class="card-text pl-5"><h5 class="text-primary">Reply to :</h5><a href="{% url 'notes' post.reply.id %}" class="card-text pl-5">{{post.reply}}</a> </p>
+          {% endif %}
+        </div>
+      </div>
+      {% if request.user == post.Author %}
+      <div class="card-footer text-right p-4 pb-2">
+        <figcaption class="blockquote-footer">
+          Made By
+          <cite title="Source Title"
+            >You, {{post.created | timesince}} ago</cite
+          >
+        </figcaption>
+        {% else %}
+        <div class="card-footer text-right p-4 pb-2">
+          <figcaption class="blockquote-footer">
+            Made By
+            <cite title="Source Title"
+              >{{ post.Author }}, {{post.created | timesince}} ago</cite
+            >
+          </figcaption>
+        </div>
+        {% endif %}
+      </div>
+
+       <div class="d-flex justify-content-end">
+    <a href="{% url 'reply' post.id %}" class="btn btn-primary m-4 ">Reply</a>
+  </div>
+
+  </div>
+  </div>
+ 
+  </div>
+
+  
+
+{% if user not in post.dislikes.all %}
+<div >
+
+<form
+  action="{% url 'like-post' %}"
+  method="POST"
+  class="d-flex justify-content-center"
+>
+  {% csrf_token %} {% if user in post.likes.all %}
+  <button
+    type="submit"
+    name="post_id"
+    value="{{ post.id }}"
+    class="btn btn-primary m-4"
+  >
+    Unlike
+  </button>
+  {% else %}
+  <button
+    type="submit"
+    name="post_id"
+    value="{{ post.id }}"
+    class="btn btn-primary m-4"
+  >
+    Like
+  </button>
+  {% endif %}
+</form>
+<strong class="d-flex justify-content-center"
+  >Likes: {{post.likes.all.count}}</strong
+>
+
+{% endif %} {% if user not in post.likes.all %}
+<form
+  action="{% url 'dislike-post' %}"
+  method="POST"
+  class="d-flex justify-content-center"
+>
+  {% csrf_token %} {% if user in post.dislikes.all %}
+  <button
+    type="submit"
+    name="post_id"
+    value="{{ post.id }}"
+    class="btn btn-primary m-4"
+  >
+    Undislike
+  </button>
+  {% else %}
+  <button
+    type="submit"
+    name="post_id"
+    value="{{ post.id }}"
+    class="btn btn-primary m-4"
+  >
+    DisLike
+  </button>
+  {% endif %}
+</form>
+<strong class="d-flex justify-content-center"
+  >disLikes: {{post.dislikes.all.count}}</strong
+>
+{% endif %}
+    </div>
+    
+  </div>
+</div>
+<div class="d-flex justify-content-center">
+  {% if user not in post.enrolled.all %}
+  <form
+    action="{% url 'enroll' post.id %}"
+    method="POST"
+    class="d-flex justify-content-center"
+  >
+    {% csrf_token %}
+    <button
+      type="submit"
+      name="post_id"
+      value="{{ post.id }}"
+      class="btn btn-primary m-4"
+    >
+      enroll
+    </button>
+    {% endif %}
+  </form>
+  </div>
+
+
+  
+
+
+
+{% if request.user == post.Author %}
+  <div>
+<div class="d-flex justify-content-center">
+  <a href="{% url 'delete' post.id %}" class="btn btn-primary m-4">delete</a>
+  <a href="{% url 'update' post.id %}" class="btn btn-primary m-4">update</a>
+</div>
+</div>
+{% endif %}  
+
+
+
+
+
+{% endfor %} {% endblock content%}

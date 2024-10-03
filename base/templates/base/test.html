@@ -1,0 +1,96 @@
+{% extends 'base/base.html' %} {% block content %} {% for post in post %} 
+ 
+<nav class="navbar navbar-expand-lg bg-primary font-monospace">
+  <div class="container-fluid">
+    <a href="{% url 'home' %}" class="navbar-brand">Home</a>
+    {% for notes in notes %}
+    
+    <a class="navbar-brand" aria-current="page" href="{% url 'notes' notes.id %}"
+      >Notes</a
+    >
+    {% endfor %}
+
+    <form class="d-flex" action="{% url 'notes_search' %}" method="GET">
+      <input
+        name="q"
+        class="form-control me-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="btn btn-dark btn-outline-primary" type="submit">
+        Search
+      </button>
+    </form>
+  </div>
+</nav>
+
+
+{% for notes in notes %} {% for tests in tests %} 
+
+
+
+
+
+
+
+<div class="d-flex justify-content-center">
+  <div class="w-50 p-5"> 
+    <div class="card"> 
+      <div class="card-group">
+        <div class="card-body">
+            <center>
+          <h5 class="card-title text-primary">
+            {{tests.Title}}
+          </h5>
+          </center>
+          <p class="card-text pl-5 ">{{tests.Summary}}</p>
+        </div>
+    </div>
+    <div class="card-footer text-right p-4 pb-2">
+          <figcaption class="blockquote-footer">
+            Made By
+            <cite title="Source Title "
+              >{{ tests.user }}, {{tests.created | timesince}} ago</cite
+            >
+          </figcaption>
+        </div>
+      </div>
+      </div>
+      </div>
+      <center ><small>
+      <a href="{% url 'add_testcomment' post.id notes.id  tests.id%}" class="btn btn-primary m-2 btn-group btn-group-sm">Add Comment</a>
+      {% if request.user == tests.user %}
+      <a href="{% url 'delete_test' tests.id notes.id  %}" class="btn btn-primary m-2 btn-group btn-group-sm">delete</a>
+      {% endif %}
+    </small></center>
+    <hr style="
+    position: relative;
+    border-top: 3px dashed green;
+    top: 20px;
+    padding-top: 20px;
+    ">
+
+      {% for Test_message in test.test_message.all %}
+    {% if request.user == Test_message.user %}
+    <a href="{% url 'profile' Test_message.user.id %}"><center>You</a><small  class="text-muted"> -- made {{Test_message.updated|timesince}} ago </center></small>
+    {% else %}
+    <a href="{% url 'profile' Test_message.user.id %}"><center>@{{Test_message.user.username}}</a><small  class="text-muted"> -- made {{Test_message.updated|timesince}} ago </center></small>
+    {% endif %}
+    <br>
+    <div style=" max-width:80%; padding-left: 20%;">
+    <small style="word-wrap: break-word;" ><center>{{Test_message.body}}</center></small>
+    </div>
+    {% endfor %}
+    <hr style="
+    position: relative;
+    border-top: 3px dashed green;
+    top: 20px;
+    padding-top: 20px;
+    ">
+    {% endfor %} {% endfor %}
+    {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

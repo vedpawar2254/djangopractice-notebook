@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %} {% block content %}
+
+
+
+  <div class="container m2">
+    <div class="form-group row">
+      <form action="" method="POST">
+        {% csrf_token %}
+        
+        {{form.as_p}}
+        <button
+          type="submit"
+          class="justify-content-center btn btn-primary start-50 m-4 d-flex"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var name = "{{user.id}}";
+    var reply_id = "{{user.id}}"
+    document.getElementById("Author").value = name;
+    // document.getElementById("reply").value = reply_id;
+  </script>
+</body>
+
+{% endblock content %}

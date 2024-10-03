@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %} {% block content %}
+<form method="POST">
+  {% csrf_token %} {{test_messageForm.as_p}}
+  <button type="submit">Add Message</button>
+</form>
+
+<script>
+    
+    var test = "{{test.id}}";
+    var user = "{{request.user}}"
+    // console.log(test)
+    document.getElementById("test_message").value = test;
+    document.getElementById("test_message_user").value = user;
+    console.log(test)
+
+  </script>
+</body>
+
+{% endblock %}

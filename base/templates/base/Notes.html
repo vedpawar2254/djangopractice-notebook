@@ -1,0 +1,287 @@
+{% extends 'base/base.html' %} {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<nav class="navbar navbar-expand-lg bg-primary font-monospace">
+  <div class="container-fluid">
+    <a href="{% url 'home' %}" class="navbar-brand">Home</a>
+
+    {% if request.user == notes1.post.Author %} {% for post in post %}
+    <a href="{% url 'Notes_form' post.id %}" class="navbar-brand">Notes Form</a>
+    {% endfor %} {% endif %}
+
+
+    {% if userenrolled %}
+    <p style="color:black; padding-top: 10px;" >Enrolled: {{userenrolled.count}} </p> 
+    {% endif %}
+    {% if userenrolled %}
+    {% for post in post %}
+    <p style="color:black; padding-top: 10px;">Completed by: {{post.completed.count}} </p> 
+    
+    {% endfor %}
+    {% endif %}
+
+    {% for post in post %}
+    {% if user in post.enrolled.all %} 
+      <!-- {{post.completed.all}} -->
+      
+      {% if user in post.completed.all %}
+      <a class="navbar-brand"
+        >Status: Complete</a>
+      {% else %}
+      
+      <a class="navbar-brand"
+        >Status: Incomplete</a>
+
+
+      {% endif %}
+      <a href="{% url 'acountability' post.id %}" class="navbar-brand">Not Completed yet by</a>
+      {% endif %}
+      {% endfor %}
+
+
+    <form class="d-flex" action="{% url 'notes_search' %}" method="GET">
+      <input
+        name="q"
+        class="form-control me-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="btn btn-dark btn-outline-primary" type="submit">
+        Search
+      </button>
+    </form>
+
+    {% for post in post %}
+    <form
+      action="{% url 'complete-post' post.id %}"
+      
+      method="POST"
+      class="d-flex"
+    >
+      {% csrf_token %} {% if user in post.enrolled.all %} 
+      <!-- {{post.completed.all}} -->
+      
+      {% if user in post.completed.all %}
+      
+      {% else %}
+      <button
+        type="submit"
+        name="post_id"
+        value="{{ post.id }}"
+        class="btn btn-dark btn-outline-primary"
+        
+      >
+      Complete
+      </button>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
+      </form>
+
+      {% for notes in notes %}
+      <a href="{% url 'discussion' notes.id %}" class="navbar-brand">discussion forum</a>
+      {% endfor %}
+
+      
+  </div>
+</nav>
+
+<!-- <hr style="position: relative; border-top: 3px dashed green; top: 20px" /> -->
+<div>
+  {% if notes %} {% for notes in notes %}
+
+
+
+  <div>
+    <center class="Topics text-primary">
+      <h2>{{notes.Topic}}</h2>
+      <p style="padding-left: 250px; color: black">
+        --{{notes.created |timesince }} ago
+      </p>
+    </center>
+    <hr style="border: 1px solid rgb(43, 0, 145); border-radius: 5px" />
+  </div>
+  
+  <div
+  class="element"
+  style="float: right; top: 20%; right: 0; width: 34%; word-wrap: break-word"
+  >
+  {% if request.user == notes.post.Author %} {% for post in post %}
+  <small>
+    <a
+    href="{% url 'Link_form' post.id %}"
+    class="btn btn-primary m-4 btn-group btn-group-sm"
+    style="right: -150px"
+    >Add Reference Link</a
+    >
+  </small>
+  {% endfor %} {% endif %}
+  
+  <p class="text-primary">Reference Links:</p>
+  
+  {% for links in links %}
+  <a href="{{links}}" style="color: black">{{links}}</a>
+  {% endfor %} {% if request.user == notes.post.Author %}
+  <div>
+    {% for post in post%}
+    <small>
+      <a
+      href="{% url 'questions_form' post.id %}"
+      class="btn btn-primary m-4 btn-group btn-group-sm"
+      style="right: -150px"
+      >Questions Form</a
+      >
+    </small>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <h5 class="text-primary ml-3">Questions:</h5>
+  
+  {% for questions in questions %}
+  <h5 style="color: black">{{questions}}</h5>
+  {% endfor %}
+</div>
+
+<div style="width: 60%; word-wrap: break-word; color: black">
+  <h4 class="text-primary">NOTES:</h4>
+  <h5>{{notes.Notes | safe}}</h5>
+</div>
+<div
+style="width: 60%; word-wrap: break-word; color: black; padding-top: 50px"
+>
+<h4 class="text-primary">Summary:</h4>
+<h5>{{notes.Summary}}</h5>
+</div>
+
+
+{% if request.user == notes.post.Author %}
+
+<center>
+  <a href="{% url 'delete_notes' notes.id %}" class="btn btn-primary m-4"
+  >Delete</a
+  >
+  <a href="{% url 'update_notes' notes.id %}" class="btn btn-primary m-4"
+  >Update</a
+  >
+  {% endif %} 
+
+  
+</center>
+</div>
+
+<center>
+  
+  {% for post in post %}
+  <a href="{% url 'test_form' post.id notes.id %}" class="btn btn-primary m-4"
+    >Test Yourself</a
+  >
+  {% endfor %}
+  
+  
+</center>
+
+
+<hr
+  style="
+    position: relative;
+    border-top: 3px dashed green;
+    top: 20px;
+    padding-top: 20px;
+  "
+/>
+
+
+
+<div>
+{% for post in post %}
+<center> <h2>Comments: </h2> </center>
+
+
+{% if user in post.enrolled.all %} 
+<center ><small>
+  <a href="{% url 'add_comment' post.id notes.id %}" class="btn btn-primary m-2 btn-group btn-group-sm">Add comment</a>
+</small></center>
+{% endif %}
+
+  {% for message in notes.message.all %} 
+  <div> 
+  {% if request.user == message.user %}
+    <center>
+  <a href="{% url 'delete_comment' post.id message.id %}">delete</a>
+  <a href="{% url 'update_message' post.id notes.id message.id %}">update</a>
+  </center>
+  {% endif %}
+
+  
+
+
+  {% if request.user == message.user %}
+  <a href="{% url 'profile' message.user.id %}"><center>You</a><small  class="text-muted"> -- made {{message.updated|timesince}} ago </center></small>
+  {% else %}
+  <a href="{% url 'profile' message.user.id %}"><center>@{{message.user.username}}</a><small  class="text-muted"> -- made {{message.updated|timesince}} ago </center></small>
+  {% endif %}
+  <br>
+  <div  style=" max-width:80%; padding-left: 20%;">
+  <small style="word-wrap: break-word;"><center>{{message.body}}</center></small>
+  </div>
+  <br>
+  
+  <hr>
+
+  {% endfor %}
+
+  {% endfor %}
+
+  </div>
+
+
+  <hr />
+</div>
+
+
+
+  
+
+<div>
+{% endfor %}
+
+<!-- <h1>Users:</h1>
+    {% if userenrolled %} {{userenrolled.count}} {% endif %}
+    <hr />
+    {% for userenrolled in userenrolled %}
+    <h1>{{userenrolled}}</h1>
+    {% endfor %} -->
+
+</div>
+
+
+
+
+{% else %}
+<div>
+  <h1>NO NOTES</h1>
+
+  {% for post in post %} {% if request.user == post.Author %}
+
+  <a href="{% url 'Notes_form' post.id %}" class="btn btn-primary m-4"
+    >ADD NOTES HERE</a
+  >
+  
+  {% endif %} 
+  {% endfor %}
+</div>
+
+{% endif %}
+
+ 
+
+{% endblock content %}
+</div>
